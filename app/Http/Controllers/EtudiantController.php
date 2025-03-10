@@ -87,11 +87,8 @@ class EtudiantController extends Controller
      */
     public function destroy($id)
     {
-        $etudiant = User::where('role', 'etudiant')->findOrFail($id);
-    
-        // Supprimer les relations associées
-        $etudiant->demandes()->delete(); 
-        $etudiant->documents()->delete();
+        $etudiant = User::where('role', 'user')->findOrFail($id);
+        
     
         // Supprimer l'étudiant
         $etudiant->delete();

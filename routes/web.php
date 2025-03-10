@@ -44,7 +44,6 @@ Route::group(['middleware' => 'auth'], function() {
         
 Route::get('/import-users/create',[UserImportController::class, 'index'])->name('imports.index');
 Route::post('/import-users', [UserImportController::class, 'import'])->name('import.users');
-
         Route::resource('etudiants', EtudiantController::class);
         Route::get('/documentsall',[DocumentController::class,"index"])->name('user_documents_view');
         Route::get("/documentshow/{id}",[DocumentController::class,"show"])->name("documentshow");
@@ -60,6 +59,7 @@ Route::post('/import-users', [UserImportController::class, 'import'])->name('imp
         // Route::inertia('/adminDashboard','Admin')->name('adminDashboard');
     });
     Route::group(['middleware' => 'checkRole:user'], function() {
+    
          Route::get("/document/{id}",[DocumentController::class,"show"])->name('document');
         Route::get('/demandes/index',[DemandeDeLectureController::class, 'demandeliste'])->name('demandes.list');
         Route::get('/documents/{document}/lecture', [DocumentController::class, 'lecture'])->name('documents.lecture');
