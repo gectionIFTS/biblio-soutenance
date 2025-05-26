@@ -23,24 +23,30 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background-color:rgba(173, 173, 176, 0.73);
+            background: linear-gradient(135deg, #e0f7fa, #80deea);
             flex-direction: column;
         }
 
         .glass-container {
-            background: #fff;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-            padding: 30px;
-            border-radius: 15px;
+            background: linear-gradient(135deg,rgb(255, 255, 255),rgb(243, 248, 155));
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
             width: 100%;
-            max-width: 400px;
+            max-width: 420px;
             text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            animation: fadeIn 1s ease-out;
         }
 
         h2 {
             color: #007bff;
-            font-size: 24px;
+            font-size: 28px;
             margin-bottom: 20px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            animation: pulse 2s infinite;
         }
 
         .glass-container a {
@@ -58,7 +64,7 @@
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background:rgb(17, 17, 17);
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
             color: white;
             padding: 12px 25px;
             font-size: 16px;
@@ -71,17 +77,28 @@
 
         .button-return:hover {
             transform: scale(1.1);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
     </style>
 </head>
 <body>
     <div class="glass-container">
-    <div>
-                <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-                </a>
-            </div>
+        <div>
+            <a href="/">
+                <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
+            </a>
+        </div>
         <h2>Bienvenue</h2>
         
         <div>

@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Consultation des Documents</title>
 
     <!-- Fonts & Styles -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.bunny.net" />
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
@@ -21,13 +21,14 @@
             box-shadow: 0 4px 12px rgba(91, 91, 92, 0.537);
             transition: transform 0.3s ease;
             padding: 10px;
+            justify-content: space-between;
         }
         .doc-card:hover {
             transform: scale(1.02);
         }
         .doc-card img {
             width: 100%;
-            height: 180px;
+            height: 280px; /* hauteur augmentée encore */
             object-fit: cover;
         }
         body {
@@ -47,9 +48,11 @@
         }
         .content-container {
             margin-top: 120px;
-            max-width: 1222px;
+            max-width: 1500px;
             margin-left: auto;
             margin-right: auto;
+            padding-left: 1rem;
+            padding-right: 1rem;
         }
         .grid-container {
             display: grid;
@@ -57,29 +60,49 @@
             gap: 20px;
         }
         @media (min-width: 640px) {
-            .grid-container { grid-template-columns: repeat(2, 1fr); }
+            .grid-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
         @media (min-width: 768px) {
-            .grid-container { grid-template-columns: repeat(3, 1fr); }
+            .grid-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
         }
         @media (min-width: 1024px) {
-            .grid-container { grid-template-columns: repeat(6, 1fr); }
+            .grid-container {
+                grid-template-columns: repeat(5, 1fr);
+                justify-content: center;
+            }
         }
 
-        /* Style du conteneur de filtre */
         .filter-container {
             margin: 2rem 0;
             padding: 1.5rem;
             background-color: white;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+            width: 100%;
+        }
+        .filter-container form {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+            width: 100%;
         }
         .filter-container input,
         .filter-container select {
             padding: 0.75rem;
             border-radius: 4px;
             border: 1px solid #ccc;
-            margin-bottom: 1rem;
+            flex-grow: 1;
+            min-width: 120px;
+        }
+        .filter-container input[name="search"] {
+            flex-grow: 2;
+            min-width: 200px;
         }
         .filter-container button,
         .filter-container a {
@@ -88,6 +111,7 @@
             text-decoration: none;
             font-weight: bold;
             text-align: center;
+            white-space: nowrap;
         }
         .btn-search {
             background-color: #2563EB;
@@ -108,8 +132,7 @@
         .btn-refresh:hover {
             background-color: rgba(8, 36, 91, 0.75);
         }
-        
-        /* Bouton Retour */
+
         .btn-return {
             padding: 10px 20px;
             background-color: rgb(14, 41, 78);
@@ -125,9 +148,53 @@
         .btn-return:hover {
             background-color: rgba(8, 36, 91, 0.75);
         }
-        .read{
+        .read {
             background-color: #1D4ED8;
             border-radius: 4px;
+        }
+
+        .doc-card .p-5 {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            min-height: 220px; /* zone texte plus haute */
+        }
+        .doc-card .p-5 h5,
+        .doc-card .p-5 h3 {
+            margin-bottom: 0.5rem;
+        }
+        .doc-card .p-5 .flex {
+            margin-top: auto;
+        }
+
+        .btn-voir-plus {
+            background-color: #0a2f5a;
+            color: white;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+        .btn-voir-plus:hover {
+            background-color: #081e3c;
+        }
+
+        .doc-card h5 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            min-height: 3em;
+        }
+
+        /* ==== Police Times New Roman pour les directeurs ==== */
+        .directeur-times {
+            font-family: 'Times New Roman', Times, serif;
+            color:rgb(7, 129, 7); /* Vert clair */
+        }
+
+        /* Modification bouton côte à côte */
+        .flex.justify-start.gap-2 {
+            justify-content: flex-start !important;
         }
     </style>
 </head>
@@ -138,15 +205,43 @@
 
     <div class="content-container m-6">
         <div class="filter-container">
-            <form method="GET" action="/documentss" class="flex flex-wrap gap-4">
-                <input type="text" name="search" placeholder="Rechercher un document..." class="border p-2 rounded w-full md:w-1/3" value="{{ request('search') }}">
-                <select name="filiere" class="border p-2 rounded w-full md:w-1/4">
+            <form method="GET" action="/documentss">
+                <input
+                    type="text"
+                    name="search"
+                    placeholder="Rechercher un document..."
+                    class="border p-2 rounded"
+                    value="{{ request('search') }}"
+                />
+                <select name="filiere" class="border p-2 rounded w-40">
                     <option value="">Toutes les filières</option>
-                    <option value="genie-electrique" {{ request('filiere') == 'genie-electrique' ? 'selected' : '' }}>Génie électrique</option>
-                    <option value="genie-civil" {{ request('filiere') == 'genie-civil' ? 'selected' : '' }}>Génie civil</option>
+                    <option
+                        value="genie-electrique"
+                        {{ request('filiere') == 'genie-electrique' ? 'selected' : '' }}
+                    >
+                        Génie électrique
+                    </option>
+                    <option
+                        value="genie-civil"
+                        {{ request('filiere') == 'genie-civil' ? 'selected' : '' }}
+                    >
+                        Génie civil
+                    </option>
                 </select>
-                <input type="text" name="directeur" placeholder="Nom du directeur" class="border p-2 rounded w-full md:w-1/4" value="{{ request('directeur') }}">
-                <input type="text" name="annee" placeholder="Année" class="border p-2 rounded w-full md:w-1/4" value="{{ request('annee') }}">
+                <input
+                    type="text"
+                    name="directeur"
+                    placeholder="Nom du directeur"
+                    class="border p-2 rounded w-40"
+                    value="{{ request('directeur') }}"
+                />
+                <input
+                    type="text"
+                    name="annee"
+                    placeholder="Année"
+                    class="border p-2 rounded w-24"
+                    value="{{ request('annee') }}"
+                />
                 <button type="submit" class="btn-search">Rechercher</button>
                 <a href="/documentss" class="btn-refresh">Actualiser</a>
             </form>
@@ -157,34 +252,39 @@
         </h1>
 
         <div class="grid-container">
-          
             @foreach ($documents as $document)
-                <div class="doc-card">
-                    <a href="{{route('documentss.show', $document->id)}}">
-                        <img class="object-cover w-full h-48 bg-gray-300"
-                             src="{{ $document->photo ? Storage::url($document->photo) : '/default-image.jpg' }}"
-                             alt="{{ $document->titre }}">
-                    </a>
-                    <div class="p-5">
-                        <h5 class="text-xl font-bold text-gray-900">{{ $document->titre }}</h5>
-                        <h3 class="text-lg font-semibold text-gray-800">{{ $document->directeur }}</h3>
-                        <p class="text-gray-700">{{ Str::limit($document->description, 20, '...') }}</p>
-                        <div class="flex justify-between">
-                            <a href="{{route('documentss.show', $document->id)}}" class="inline-flex items-center px-4 py-2 text-sm font-medium text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-colors">
-                                Voir plus
-                             </a>
-                           
-                             @if ($document->estApprouvePourUtilisateur(auth()->id()) || auth()->user()->matricule)
-                             <a href="{{ route('documents.lecture', $document->id) }}" 
-                                class="inline-flex items-center px-4 py-2 text-sm text-white font-medium read">
-                                 Lire
-                             </a>
-                         @endif
-                         
-                         
-                        </div>
+            <div class="doc-card">
+                <a href="{{ route('documentss.show', $document->id) }}">
+                    <img
+                        class="object-cover w-full h-48 bg-gray-300"
+                        src="{{ $document->photo ? Storage::url($document->photo) : '/default-image.jpg' }}"
+                        alt="{{ $document->titre }}"
+                    />
+                </a>
+                <div class="p-5">
+                    <h5 class="text-xl font-bold text-gray-900">{{ $document->titre }}</h5>
+                    <h3 class="text-lg font-semibold text-gray-800 directeur-times">
+                        {{ $document->directeur }}
+                    </h3>
+                    <div class="flex justify-start gap-2">
+                        <a
+                            href="{{ route('documentss.show', $document->id) }}"
+                            class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg btn-voir-plus"
+                        >
+                            Voir plus
+                        </a>
+                        @if ($document->estApprouvePourUtilisateur(auth()->id()) ||
+                        auth()->user()->matricule)
+                        <a
+                            href="{{ route('documents.lecture', $document->id) }}"
+                            class="inline-flex items-center px-4 py-2 text-sm text-white font-medium read"
+                        >
+                            Lire
+                        </a>
+                        @endif
                     </div>
                 </div>
+            </div>
             @endforeach
         </div>
 

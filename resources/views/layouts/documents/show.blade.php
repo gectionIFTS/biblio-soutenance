@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Consultation des Documents</title>
 
     <!-- Fonts & Styles -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.bunny.net" />
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
@@ -100,15 +100,43 @@
         /* Animation pour faire disparaître les messages */
         .message {
             transition: opacity 1s ease;
+            margin: 10px auto;
+            max-width: 700px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
         }
-        .bloc{
+        .message.bg-green-500 {
+            background-color: #22c55e; /* vert */
+            color: white;
+        }
+        .message.bg-red-500 {
+            background-color: #ef4444; /* rouge */
+            color: white;
+        }
+        .bloc {
             word-wrap: break-word;
-  overflow-wrap: break-word;
-  white-space: normal;
+            overflow-wrap: break-word;
+            white-space: normal;
+            text-align: justify; /* <-- Justification du texte */
         }
-        .read{
+        .read {
             background-color: #1D4ED8;
             border-radius: 4px;
+        }
+
+        /* Conteneur notifications en haut */
+        #notification-container {
+            position: fixed;
+            top: 60px; /* juste sous la navbar */
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1100;
+            width: 90%;
+            max-width: 700px;
+            text-align: center;
+            pointer-events: none; /* Pour que ça ne gêne pas au clic */
         }
     </style>
 </head>
@@ -118,11 +146,14 @@
         @include('layouts.navigation')
     </div>
 
+    <!-- Conteneur notifications en haut -->
+    <div id="notification-container"></div>
+
     <!-- Contenu principal -->
     <div class="content-container">
         <h2>Consultation des Documents</h2>
 
-        <img src="{{ $document->photo ? Storage::url($document->photo) : '/default-image.jpg' }}" alt="Image du document" class="document-image bg-gray-500">
+        <img src="{{ $document->photo ? Storage::url($document->photo) : '/default-image.jpg' }}" alt="Image du document" class="document-image bg-gray-500" />
         <div class="document-details">
             <h1 class="text-3xl font-bold mb-4"><strong>Titre: </strong>{{ $document->titre }}</h1>
             <p class="bloc"><strong>Description :</strong> {{ $document->description }}</p>
@@ -133,8 +164,8 @@
         <div class="mt-4">
             <form action="{{ route('demandes.store') }}" method="POST">
                 @csrf
-                <input type="hidden" name="document_id" value="{{ $document->id }}">
-                
+                <input type="hidden" name="document_id" value="{{ $document->id }}" />
+
                 @if ($document->estApprouvePourUtilisateur(auth()->id()) || (auth()->check() && auth()->user()->matricule))
                     <a href="{{ route('documents.lecture', $document->id) }}" 
                        class="inline-flex items-center px-4 py-2 text-sm text-white font-medium read">
@@ -152,20 +183,6 @@
                 @endif
             </form>
         </div>
-        
-
-        <!-- Message de confirmation -->
-        @if(session('success'))
-            <div id="success-message" class="message mt-4 p-3 bg-green-500 text-white rounded">
-                {{ session('success') }}
-            </div>
-        @endif
-
-        @if(session('error'))
-            <div id="error-message" class="message mt-4 p-3 bg-red-500 text-white rounded">
-                {{ session('error') }}
-            </div>
-        @endif
     </div>
 
     <!-- Bouton retour en bas à droite -->
@@ -174,28 +191,37 @@
     </a>
 
     <script>
-        // Fonction pour cacher les messages après 3 secondes
+        // Fonction pour afficher et faire disparaître les messages en haut
         window.addEventListener('DOMContentLoaded', function () {
-            const successMessage = document.getElementById('success-message');
-            const errorMessage = document.getElementById('error-message');
+            const notificationContainer = document.getElementById('notification-container');
 
-            if (successMessage) {
-                setTimeout(() => {
-                    successMessage.style.opacity = 0;
-                    setTimeout(() => {
-                        successMessage.remove();
-                    }, 1000); // Attendre la fin de l'animation
-                }, 3000);
-            }
+            @if(session('success'))
+                const successDiv = document.createElement('div');
+                successDiv.className = 'message bg-green-500';
+                successDiv.textContent = "{{ session('success') }}";
+                notificationContainer.appendChild(successDiv);
 
-            if (errorMessage) {
                 setTimeout(() => {
-                    errorMessage.style.opacity = 0;
+                    successDiv.style.opacity = 0;
                     setTimeout(() => {
-                        errorMessage.remove();
-                    }, 1000); // Attendre la fin de l'animation
+                        successDiv.remove();
+                    }, 1000);
                 }, 3000);
-            }
+            @endif
+
+            @if(session('error'))
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'message bg-red-500';
+                errorDiv.textContent = "{{ session('error') }}";
+                notificationContainer.appendChild(errorDiv);
+
+                setTimeout(() => {
+                    errorDiv.style.opacity = 0;
+                    setTimeout(() => {
+                        errorDiv.remove();
+                    }, 1000);
+                }, 3000);
+            @endif
         });
     </script>
 </body>

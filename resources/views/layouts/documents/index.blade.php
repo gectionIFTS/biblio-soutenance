@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -9,8 +8,8 @@
     <!-- Fonts & Styles -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/styles.css') }}"> {{-- Charger le fichier CSS --}}
-    <script src="https://kit.fontawesome.com/YOUR_KIT_CODE.js" crossorigin="anonymous"></script> {{-- FontAwesome pour les icônes --}}
+    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+    <script src="https://kit.fontawesome.com/YOUR_KIT_CODE.js" crossorigin="anonymous"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
@@ -18,9 +17,7 @@
             font-family: 'Figtree', sans-serif;
             background-color: rgb(255, 255, 255);
         }
-        .navbar-container {
-            
-        }
+        .navbar-container { }
         .content-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -80,8 +77,32 @@
             justify-content: center;
             margin-top: 10px;
         }
-        .filter-container{
+        .filter-container {
             margin-bottom: 10px;
+        }
+
+        /* Amélioration des boutons Modifier et Télécharger */
+        .see {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background-color: #4a90e2;
+            color: white !important;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .see i {
+            margin-right: 0.3rem;
+        }
+
+        .see:hover {
+            background-color: #357ABD;
+            transform: translateY(-2px);
         }
     </style>
 </head>
@@ -109,7 +130,6 @@
                     <button type="submit" class="btn-view text-white px-4 py-2 rounded-lg hover:bg-blue-700">Rechercher</button>
                     <a href="/documentsall" class="btn-view px-4 py-2 rounded-lg hover:bg-gray-400">Actualiser</a>
                 </form>
-                
             </div>
     
             <div class="overflow-x-auto">
@@ -132,9 +152,9 @@
                                     <img src="{{ Storage::url($document->photo) }}" 
                                          alt="Photo de {{ $document->titre }}" 
                                          class="object-cover rounded-md border border-gray-300" width="100">
-                                @else
-                                    <span class="text-gray-500">❌ Pas de photo</span>
-                                @endif
+                                    @else
+                                        <span class="text-gray-500">❌ Pas de photo</span>
+                                    @endif
                                 </td>
                                
                                 <td class="flex justify-between">
@@ -143,16 +163,14 @@
                                     </button>
                                 </td>
                                 <td>
-                                    <a href="{{ route('documents.edit', $document->id) }}" class="see btn-view text-blue-500 hover:text-blue-700">
-                                        <i class="fas fa-times mr-2"></i>Modifier 
+                                    <a href="{{ route('documents.edit', $document->id) }}" class="see">
+                                        <i class="fas fa-edit"></i>Modifier 
                                     </a>
-                                    
                                 </td>
                                 <td>
-                                    <a href="{{ Storage::url($document->chemin_fichier) }}" class="see text-blue-500 btn-view hover:text-blue-700" download="">
-                                        <i class="fas fa-times mr-2" ></i>Télécharger
+                                    <a href="{{ Storage::url($document->chemin_fichier) }}" class="see" download>
+                                        <i class="fas fa-download"></i>Télécharger
                                     </a>
-                                    
                                 </td>
                             </tr>
                     
@@ -174,25 +192,19 @@
                             </div>
                         @endforeach
                     </tbody>
-                    
                 </table>
-                
             </div>
             
-        <div class="pagin">
-            {{ $documents->links() }}
-        </div>    
-        <div class="flex justify-end">
-            <a href="{{ route('adminDashboard') }}" class="btn-view" style="">
-                Retour
-            </a>
+            <div class="pagin">
+                {{ $documents->links() }}
+            </div>    
+            <div class="flex justify-end">
+                <a href="{{ route('adminDashboard') }}" class="btn-view">
+                    Retour
+                </a>
+            </div>
         </div>
-       
-        </div>
-       
-
     </div>
-
 
     <script>
         function openModal(id) {

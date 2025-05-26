@@ -6,10 +6,9 @@
     <title>Demandes de Lecture</title>
 
     <!-- Fonts & Styles -->
-
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/styles.css') }}"> {{-- Charger le fichier CSS --}}
-    <script src="https://kit.fontawesome.com/YOUR_KIT_CODE.js" crossorigin="anonymous"></script> {{-- FontAwesome pour les icônes --}}
+    <script src="https://kit.fontawesome.com/YOUR_KIT_CODE.js" crossorigin="anonymous"></script> {{-- FontAwesome --}}
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
@@ -19,9 +18,7 @@
             font-family: 'Figtree', sans-serif;
             background-color:rgb(255, 255, 255);
         }
-        .navbar-container {
-            
-        }
+        .navbar-container {}
         .content-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -68,7 +65,6 @@
             border: none;
             cursor: pointer;
         }
-       
         .btn-reject {
             background-color: #f56565;
             color: white;
@@ -95,8 +91,6 @@
         .btn-return-fixed:hover {
             background-color: #2c5282;
         }
-
-        /* Style pour les messages flash */
         .alert {
             padding: 1rem;
             border-radius: 4px;
@@ -110,12 +104,12 @@
             background-color: #f8d7da;
             color: #721c24;
         }
-        .pagin{
+        .pagin {
             display: flex;
             justify-content: center;
             margin-top: 10px;
         }
-        .retour{
+        .retour {
             background-color: #125fa7;
             padding: 15px;
             border-radius: 10px;
@@ -130,7 +124,7 @@
             border: none;
             cursor: pointer;
         }
-        .see{
+        .see {
             background-color: #2b6cb0;
             color: white;
             padding: 0.5rem 1rem;
@@ -138,12 +132,11 @@
             text-decoration: none;
             border: none;
             cursor: pointer;
-        
         }
-        .see:hover{
+        .see:hover {
             background-color: #0a3f70;
         }
-        .btn-att{
+        .btn-att {
             background-color: #e0ac33;
             color: white;
             padding: 0.5rem 1rem;
@@ -159,151 +152,137 @@
         @include('layouts.navigation')
     </div>
 
-    <div class="container ">
+    <div class="container">
         @include('layouts.sidebar')
        
         <div class="main-content">
 
-  
-        <h1 class="text-center text-3xl font-bold mb-6 uppercase tracking-wide">
-            <i class="fas fa-book-reader mr-2"></i>GESTION DES DEMANDES DE LECTURE
-        </h1>
+            <h1 class="text-center text-3xl font-bold mb-6 uppercase tracking-wide">
+                <i class="fas fa-book-reader mr-2"></i>GESTION DES DEMANDES DE LECTURE
+            </h1>
 
-        <!-- Affichage du message de succès -->
-        @if(session('success'))
-            <div id="success-message" class="alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
-
-        <!-- Affichage du message d'erreur si présent -->
-        @if(session('error'))
-            <div id="error-message" class="alert alert-danger">
-                {{ session('error') }}
-            </div>
-        @endif
-        <div class="filter-container">
-            <form method="GET" action="{{ route('demandes.index') }}" class="flex flex-wrap gap-4 mb-4">
-                <input type="text" name="search" placeholder="Rechercher un étudiant..." 
-                    class="border p-2 rounded w-full md:w-1/3" 
-                    value="{{ request('search') }}">
-                <input type="text" name="document" placeholder="Rechercher un document..." 
-                    class="border p-2 rounded w-full md:w-1/3" 
-                    value="{{ request('document') }}">
-                <select name="filiere" class="border p-2 rounded w-full md:w-1/4">
-                    <option value="">Toutes les filières</option>
-                    <option value="genie-electrique" {{ request('filiere') == 'genie-electrique' ? 'selected' : '' }}>Génie électrique</option>
-                    <option value="genie-civil" {{ request('filiere') == 'genie-civil' ? 'selected' : '' }}>Génie civil</option>
-                </select>
-        
-                <button type="submit" class="btn-view text-white px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700">Rechercher</button>
-                <a href="{{ route('demandes.index') }}" class="btn-view px-4 py-2 rounded-lg bg-gray-300 hover:bg-gray-400">Actualiser</a>
-            </form>
-        </div> 
-        <div class="overflow-x-auto">
-            <form id="bulk-actions-form" method="POST" action="{{ route('demandes.bulk-action') }}">
-                @csrf
-                <div class="mb-4 flex justify-between">
-                    <div>
-                        <button type="submit" name="action" value="accepter" class="btn-accept">
-                            <i class="fas fa-check mr-2"></i> Accepter Sélectionnées
-                        </button>
-                        <button type="submit" name="action" value="refuser" class="btn-reject">
-                            <i class="fas fa-times mr-2"></i> Refuser Sélectionnées
-                        </button>
-                    </div>
+            @if(session('success'))
+                <div id="success-message" class="alert alert-success">
+                    {{ session('success') }}
                 </div>
-              
-                
-                <table class="table-auto w-full">
-                    <thead>
-                        <tr>
-                            <th><input type="checkbox" id="select-all"></th>  <!-- Case pour tout sélectionner -->
-                            <th>Étudiant</th>
-                            <th>Document</th>
-                            <th>Directeur</th>
-                            <th>Statut</th>
-                            <th colspan="2">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($demandes as $demande)
+            @endif
+
+            @if(session('error'))
+                <div id="error-message" class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+            @endif
+
+            <div class="filter-container">
+                <form method="GET" action="{{ route('demandes.index') }}" class="flex flex-wrap gap-4 mb-4">
+                    <input type="text" name="search" placeholder="Rechercher un étudiant..." 
+                        class="border p-2 rounded w-full md:w-1/3" 
+                        value="{{ request('search') }}">
+                    <input type="text" name="document" placeholder="Rechercher un document..." 
+                        class="border p-2 rounded w-full md:w-1/3" 
+                        value="{{ request('document') }}">
+                    <select name="filiere" class="border p-2 rounded w-full md:w-1/4">
+                        <option value="">Toutes les filières</option>
+                        <option value="genie-electrique" {{ request('filiere') == 'genie-electrique' ? 'selected' : '' }}>Génie électrique</option>
+                        <option value="genie-civil" {{ request('filiere') == 'genie-civil' ? 'selected' : '' }}>Génie civil</option>
+                    </select>
+                    <button type="submit" class="btn-view text-white px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700">Rechercher</button>
+                    <a href="{{ route('demandes.index') }}" class="btn-view px-4 py-2 rounded-lg bg-gray-300 hover:bg-gray-400">Actualiser</a>
+                </form>
+            </div> 
+
+            <div class="overflow-x-auto">
+                <form id="bulk-actions-form" method="POST" action="{{ route('demandes.bulk-action') }}">
+                    @csrf
+                    <div class="mb-4 flex justify-between">
+                        <div>
+                            <button type="submit" name="action" value="accepter" class="btn-accept">
+                                <i class="fas fa-check mr-2"></i> Accepter Sélectionnées
+                            </button>
+                            <button type="submit" name="action" value="refuser" class="btn-reject">
+                                <i class="fas fa-times mr-2"></i> Refuser Sélectionnées
+                            </button>
+                        </div>
+                    </div>
+
+                    <table class="table-auto w-full">
+                        <thead>
                             <tr>
-                                <td><input type="checkbox" name="demandes[]" value="{{ $demande->id }}" class="select-item"></td> <!-- Case à cocher pour chaque ligne -->
-                                <td>{{ $demande->etudiant->name }}</td>
-                                <td>{{ $demande->documents->titre }}</td>
-                                <td>{{ $demande->documents->directeur }}</td>
-                                <td>
-                                    @if($demande->statut ==='approuvee')
-                                        <span class="status btn-accept {{ $demande->statut }}">
-                                             {{ ucfirst($demande->statut) }}
-                                        </span>
-                                    @endif
-                                    @if($demande->statut ==="refusee")
-                                        <span class="status btn-reject {{ $demande->statut }}">
-                                             {{ ucfirst($demande->statut) }}
-                                        </span>
-                                    @endif
-                                    @if($demande->statut ==="attente")
-                                    <span class="status btn-att {{ $demande->statut }}">
-                                         {{ ucfirst($demande->statut) }}
-                                    </span>
-                                    @endif
-                                </td>
-                                
-                                <td>
-                                    <a href="{{ route('documentshow', $demande->document_id) }}" class="see text-blue-500 hover:text-blue-700">
-                                        <i class="fas fa-times mr-2"></i>Voir le document
-                                    </a>
-                                </td>
+                                <th><input type="checkbox" id="select-all"></th>
+                                <th>Étudiant</th>
+                                <th>Document</th>
+                                <th>Directeur</th>
+                                <th>Statut</th>
+                                <th colspan="2">Actions</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </form>
-           
-        </div>
-        <div class="pagin">
-        
-            {{ $demandes->links() }}
-        </div>
-        <div class="flex justify-end">
-            <a href="{{ route('adminDashboard') }}" class="retour ">Retour</a>
-        </div>
+                        </thead>
+                        <tbody>
+                            @foreach ($demandes as $demande)
+                                <tr>
+                                    <td><input type="checkbox" name="demandes[]" value="{{ $demande->id }}" class="select-item"></td>
+                                    <td>{{ $demande->etudiant->name }}</td>
+                                    <td>{{ $demande->documents->titre }}</td>
+                                    <td>{{ $demande->documents->directeur }}</td>
+                                    <td>
+                                        @if($demande->statut ==='approuvee')
+                                            <span class="status btn-accept {{ $demande->statut }}">
+                                                 {{ ucfirst($demande->statut) }}
+                                            </span>
+                                        @endif
+                                        @if($demande->statut ==="refusee")
+                                            <span class="status btn-reject {{ $demande->statut }}">
+                                                 {{ ucfirst($demande->statut) }}
+                                            </span>
+                                        @endif
+                                        @if($demande->statut ==="attente")
+                                            <span class="status btn-att {{ $demande->statut }}">
+                                                 {{ ucfirst($demande->statut) }}
+                                            </span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <!-- BOUTON MODIFIÉ : Version plus jolie -->
+                                        <a href="{{ route('documentshow', $demande->document_id) }}" 
+                                           class="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg shadow-md transition duration-300">
+                                            <i class="fas fa-eye mr-2"></i> Voir le document
+                                        </a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </form>
+            </div>
 
+            <div class="pagin">
+                {{ $demandes->links() }}
+            </div>
+            <div class="flex justify-end">
+                <a href="{{ route('adminDashboard') }}" class="retour ">Retour</a>
+            </div>
+
+        </div>
     </div>
-
-   
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // Vérifier si un message de succès ou d'erreur est présent
             const successMessage = document.getElementById('success-message');
             const errorMessage = document.getElementById('error-message');
-            
-            // Fonction pour masquer un message après 3 secondes
             function hideMessage(element) {
                 setTimeout(function() {
                     if (element) {
                         element.style.display = 'none';
                     }
-                }, 3000); // Masquer après 3 secondes
+                }, 3000);
             }
-
-            // Masquer les messages si présents
-            if (successMessage) {
-                hideMessage(successMessage);
-            }
-            if (errorMessage) {
-                hideMessage(errorMessage);
-            }
+            if (successMessage) { hideMessage(successMessage); }
+            if (errorMessage) { hideMessage(errorMessage); }
         });
         
-    document.getElementById('select-all').addEventListener('change', function() {
-        let checkboxes = document.querySelectorAll('.select-item');
-        checkboxes.forEach(checkbox => checkbox.checked = this.checked);
-    });
-
+        document.getElementById('select-all').addEventListener('change', function() {
+            let checkboxes = document.querySelectorAll('.select-item');
+            checkboxes.forEach(checkbox => checkbox.checked = this.checked);
+        });
     </script>
 </body>
 </html>
