@@ -1,14 +1,19 @@
-# Utiliser une image PHP avec Apache
-FROM php:8.1-apache
+# Utiliser une image PHP 8.2 avec Apache
+FROM php:8.2-apache
 
-# Installer les extensions PHP nécessaires pour Laravel
+# Installer les dépendances nécessaires pour Laravel et extensions PHP
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libonig-dev \
     libzip-dev \
     zip \
     unzip \
-    && docker-php-ext-install pdo pdo_mysql mbstring zip exif pcntl
+    libfreetype6-dev \
+    libjpeg-dev \
+    libwebp-dev \
+    libxpm-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp --with-xpm \
+    && docker-php-ext-install gd pdo pdo_mysql mbstring zip exif pcntl
 
 # Activer le module Apache rewrite
 RUN a2enmod rewrite
@@ -19,10 +24,10 @@ COPY . /var/www/html
 # Donner les droits nécessaires au dossier storage et bootstrap/cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Installer Composer
+# Installer Composer (dernière version officielle)
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Installer les dépendances PHP
+# Installer les dépendances PHP avec Composer
 RUN composer install --no-dev --optimize-autoloader
 
 # Exposer le port 80
